@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавление вашей игры</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header>
+    <h1>Добавление вашей игры</h1>
+</header>
+
+<main>
+    <section>
+        <form action="#" th:action="@{/game/new_game}" th:object="${game}" method="post" enctype="multipart/form-data">
+            <label for="title">Название игры:</label>
+            <input type="text" id="title" th:field="*{title}" required /><br/>
+
+            <label for="details">О игре:</label>
+            <textarea id="details" th:field="*{details}" required></textarea><br/>
+
+            <label for="imageFile">Загрузите изображение игры:</label>
+            <input type="file" id="imageFile" name="imageFile" accept="image/*" required /><br/>
+
+            <label for="gameFile">Загрузите файл игры:</label>
+            <input type="file" id="gameFile" name="gameFile" accept=".zip,.rar,.exe,.apk" required /><br/>
+
+            <label for="category">Категории:</label>
+            <select id="category" name="categoryId" multiple required>
+                <option th:each="category : ${allCategories}"
+                        th:value="${category.id}"
+                        th:text="${category.title}">
+                </option>
+            </select><br/>
+
+            <button type="submit">Добавить игру</button>
+        </form>
+    </section>
+
+    <section>
+        <a href="/home">Вернуться к играм <-</a>
+    </section>
+</main>
+
+<footer>
+    <p>© 2025 Indiana</p>
+</footer>
+</body>
+</html>

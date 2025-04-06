@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование игры</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header>
+    <h1>Редактирование игры</h1>
+</header>
+
+<main>
+    <section>
+        <!-- Форма для редактирования игры -->
+        <form th:action="@{/game/edit/{gameId}(gameId=${game.id})}" th:object="${game}" method="post" enctype="multipart/form-data">
+
+            <label for="title">Название</label>
+            <input type="text" id="title" th:field="*{title}" required><br/>
+
+            <label for="details">Описание</label>
+            <textarea id="details" th:field="*{details}" required></textarea><br/>
+
+            <label for="categoryId">Категории:</label>
+            <select id="categoryId" name="categoryId" multiple required>
+                <option th:each="category : ${allCategories}"
+                        th:value="${category.id}"
+                        th:text="${category.title}"
+                        th:selected="${game.categories.contains(category)}">
+                </option>
+            </select><br/>
+
+            <p>Текущее изображение:</p>
+            <img th:src="@{'/' + ${game.imageUrl}}" alt="Game Image" style="max-width: 200px;"><br/>
+
+            <label for="imageFile">Новое изображение (необязательно)</label>
+            <input type="file" id="imageFile" name="imageFile"><br/>
+
+            <p>Файл игры: <a th:href="@{'/' + ${game.gameFileUrl}}" download>Скачать</a></p>
+            <label for="gameFile">Новый файл игры (необязательно)</label>
+            <input type="file" id="gameFile" name="gameFile"><br/>
+
+            <button type="submit">Сохранить изменения</button>
+        </form>
+    </section>
+
+    <section>
+        <a href="/home">Назад ко всем играм</a>
+    </section>
+</main>
+
+<footer>
+    <p>© 2025 Game Catalog</p>
+</footer>
+</body>
+</html>
