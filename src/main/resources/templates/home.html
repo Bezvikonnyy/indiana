@@ -8,7 +8,13 @@
 </head>
 <body>
 <header>
-    <h1>ИНДИАНА</h1>
+    <div style="display: flex; justify-content: space-between;">
+        <h1>ИНДИАНА</h1>
+        <div>
+            <!-- Профиль и выход без дополнительной проверки, это уже контролируется Spring Security -->
+            <a href="/profile">Профиль</a> | <a href="/logout">Выйти</a>
+        </div>
+    </div>
 </header>
 
 <main>

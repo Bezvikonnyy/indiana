@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="/css/styles.css"> <!-- Подключение общего CSS -->
+</head>
+<body>
+
+<!-- Заголовок можно оставить вне main, но лучше внутри для выравнивания -->
+<main class="auth">
+    <section>
+        <h2>Регистрация</h2>
+        <form th:action="@{/user/registration}" th:object="${user}" method="post">
+            <div class="form-group">
+                <label for="username">Имя пользователя</label>
+                <input type="text" th:field="*{username}" id="username" required />
+            </div>
+
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" th:field="*{password}" id="password" required />
+            </div>
+
+            <div class="form-group">
+                <label for="roles">Роли</label>
+                <select th:field="*{roles}" id="roles" required>
+                    <option th:each="role : ${roles}"
+                            th:value="${role.id}"
+                            th:text="${role.title}">
+                    </option>
+                </select>
+            </div>
+
+            <button type="submit">Зарегистрироваться</button>
+
+            <div>
+                <p>Уже есть аккаунт? <a th:href="@{/user/login}">Авторизация</a></p>
+            </div>
+        </form>
+    </section>
+</main>
+
+<!-- Кнопка для перехода на главную страницу -->
+<div class="home-link" style="text-align: center; margin-top: 20px;">
+    <a href="/home">
+        <button class="btn-home">На главную</button>
+    </a>
+</div>
+
+</body>
+</html>

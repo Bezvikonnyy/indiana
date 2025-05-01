@@ -18,7 +18,7 @@ public class HomeController {
     public String getCategoriesList(Model model){
         model.addAttribute("categories", this.homeService.getAllCategories());
         model.addAttribute("categoryGameMap", this.homeService.getGamesByCategory());
-        return "/home";
+        return "home";
     }
 
 }

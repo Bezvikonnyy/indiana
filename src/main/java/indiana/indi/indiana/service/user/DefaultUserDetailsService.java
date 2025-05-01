@@ -63,7 +63,7 @@ public class DefaultUserDetailsService implements UserDetailsService{
                     user.getUsername(),
                     user.getPassword(),
                     user.getRoles().stream()
-                            .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getTitle()))
+                            .map(role -> new SimpleGrantedAuthority(role.getTitle()))
                             .collect(Collectors.toList())
         )).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }

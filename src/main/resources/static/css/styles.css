@@ -10,31 +10,66 @@ header {
     color: white;
     padding: 20px;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 main {
     padding: 20px;
 }
 
+/* Центрируем форму только на страницах логина и регистрации */
+main.auth {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
+
 section {
     background-color: white;
-    padding: 20px;
+    padding: 30px;
     margin-bottom: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 400px;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+    color: #333;
 }
 
 input[type="text"],
+input[type="password"],
+input[type="email"],
 textarea,
 select,
 input[type="file"] {
     width: 100%;
     padding: 10px;
     margin-top: 5px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    box-sizing: border-box;
 }
 
 button {
@@ -44,6 +79,7 @@ button {
     color: white;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 16px;
 }
 
 button:hover {
@@ -57,6 +93,7 @@ a {
 
 a:hover {
     text-decoration: underline;
+    color: #007BFF;
 }
 
 footer {
@@ -64,6 +101,14 @@ footer {
     color: white;
     text-align: center;
     padding: 10px;
+    margin-top: 40px;
+}
+
+/* Ошибки */
+.error-message {
+    color: red;
+    margin-bottom: 15px;
+    font-size: 14px;
 }
 
 /* Контейнер категорий */
@@ -99,7 +144,7 @@ footer {
     background-color: #f9f9f9;
     padding: 10px;
     border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Картинка */
