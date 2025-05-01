@@ -12,7 +12,7 @@
         <h1>Редактирование игры</h1>
         <div>
             <!-- Профиль и выход без дополнительной проверки, это уже контролируется Spring Security -->
-            <a href="/profile">Профиль</a> | <a href="/logout">Выйти</a>
+            <a href="/profile">Профиль</a> | <a href="/user/login">Выйти</a>
         </div>
     </div>
 </header>
@@ -20,7 +20,8 @@
 <main>
     <section>
         <!-- Форма для редактирования игры -->
-        <form th:action="@{/game/edit/{gameId}(gameId=${game.id})}" th:object="${game}" method="post" enctype="multipart/form-data">
+        <form th:action="@{/game/edit/{gameId}(gameId=${game.id})}"
+              th:object="${game}" method="post" enctype="multipart/form-data">
 
             <label for="title">Название</label>
             <input type="text" id="title" th:field="*{title}" required><br/>
