@@ -1,8 +1,39 @@
+/* Установка высоты страницы и гибкой структуры */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f2f2f2;
-    margin: 0;
-    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    padding: 20px;
+}
+
+/* общий стиль */
+section {
+    width: 100%;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+/* только для auth-страниц — логин, регистрация */
+main.auth section {
+    max-width: 400px;
+    margin: 0 auto;
 }
 
 header {
@@ -11,28 +42,6 @@ header {
     padding: 20px;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-main {
-    padding: 20px;
-}
-
-/* Центрируем форму только на страницах логина и регистрации */
-main.auth {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 80vh;
-}
-
-section {
-    background-color: white;
-    padding: 30px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-    width: 100%;
-    max-width: 1340px;
 }
 
 h2 {
@@ -103,6 +112,7 @@ footer {
     text-align: center;
     padding: 10px;
     margin-top: 40px;
+    flex-shrink: 0;
 }
 
 /* Ошибки */
