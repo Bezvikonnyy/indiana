@@ -30,11 +30,11 @@
     </script>
 </head>
 <body>
+
 <header>
-    <div style="display: flex; justify-content: space-between;">
+    <div style="display: flex; justify-content: center; align-items: center; position: relative;">
         <h1 th:text="${game.title}">Название игры</h1>
-        <div>
-            <!-- Профиль и выход без дополнительной проверки, это уже контролируется Spring Security -->
+        <div style="position: absolute; right: 20px;">
             <a href="/profile">Профиль</a> | <a href="/user/login">Выйти</a>
         </div>
     </div>
