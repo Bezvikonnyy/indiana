@@ -5,9 +5,11 @@ import indiana.indi.indiana.controller.payload.NewGamePayload;
 import indiana.indi.indiana.entity.Game;
 import indiana.indi.indiana.service.categories.CategoryService;
 import indiana.indi.indiana.service.game.GameService;
+import indiana.indi.indiana.service.user.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -46,12 +48,18 @@ public class GameController {
         return null;
     }
 
-
     private void deleteFileIfExists(String path) {
-        File file = new File(path);
+        if (path == null) return; // Проверка на null
+        File file = new File(System.getProperty("user.dir") + path);
         if (file.exists()) {
             file.delete();
         }
+    }
+
+    private boolean isAdmin(CustomUserDetails userDetails) {
+        if (userDetails == null) return false;
+        return userDetails.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("Администратор"));
     }
 
     @GetMapping("/find_all")
@@ -65,17 +73,32 @@ public class GameController {
     }
 
     @GetMapping("/{gameId}")
-    public String getGameForm(@PathVariable("gameId") long gameId, Model model) {
+    public String getGameForm(@PathVariable("gameId") long gameId,
+                              Model model,
+                              @AuthenticationPrincipal CustomUserDetails userDetails) {
         Game game = this.gameService.findGame(gameId)
                 .orElseThrow(() -> new NoSuchElementException("game.not_found"));
+
         model.addAttribute("game", game);
+        model.addAttribute("currentUserId", userDetails != null ? userDetails.getId() : null);
+        model.addAttribute("isAdmin", isAdmin(userDetails));
         return "game";
     }
 
     @GetMapping("/edit/{gameId}")
-    public String editGameForm(@PathVariable("gameId") long gameId, Model model) {
+    public String editGameForm(@PathVariable("gameId") long gameId,
+                               Model model,
+                               @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
             Game game = gameService.findGame(gameId).orElseThrow(() -> new NoSuchElementException("Игра не найдена"));
+
+            // Проверка прав доступа на редактирование
+            if (userDetails == null ||
+                    (game.getAuthor().getId() != userDetails.getId() && !isAdmin(userDetails))) {
+                model.addAttribute("error", "У вас нет прав для редактирования этой игры");
+                return "error";
+            }
+
             model.addAttribute("game", game);
             model.addAttribute("allCategories", categoryService.findAll());
             return "edit_game";
@@ -103,9 +126,9 @@ public class GameController {
     @PostMapping("/new_game")
     public ResponseEntity<?> createGame(
             @Valid NewGamePayload payload,
-            @RequestParam("imageFile")MultipartFile imageFile,
-            @RequestParam("gameFile")MultipartFile gameFile
-            ) throws IOException {
+            @RequestParam("imageFile") MultipartFile imageFile,
+            @RequestParam("gameFile") MultipartFile gameFile
+    ) throws IOException {
 
         String imageFileUrl = saveFile(imageFile, "imageFile");
         String gameFileUrl = saveFile(gameFile, "gameFile");
@@ -116,7 +139,8 @@ public class GameController {
                 imageFileUrl,
                 gameFileUrl,
                 payload.categoryId(),
-                payload.comments()
+                payload.comments(),
+                payload.author()
         );
 
         String redirectUrl = "/game/" + game.getId();
@@ -128,6 +152,7 @@ public class GameController {
     @PostMapping("/edit/{gameId}")
     public ResponseEntity<?> editGame(
             @PathVariable("gameId") long gameId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid EditGamePayload payload,
             @RequestParam("imageFile") MultipartFile imageFile,
             @RequestParam("gameFile") MultipartFile gameFile,
@@ -138,6 +163,12 @@ public class GameController {
 
         Game existingGame = gameService.findGame(gameId)
                 .orElseThrow(() -> new NoSuchElementException("game.not_found"));
+
+        boolean admin = isAdmin(userDetails);
+
+        if (existingGame.getAuthor().getId() != userDetails.getId() && !admin) {
+            return ResponseEntity.status(403).body("Вы не являетесь автором этой игры и не администратор!");
+        }
 
         String imageFileUrl = imageFile != null && !imageFile.isEmpty()
                 ? saveFile(imageFile, "imageFile")
@@ -162,8 +193,21 @@ public class GameController {
     }
 
     @DeleteMapping("/delete/{gameId}")
-    public ResponseEntity<Void> deleteGame(@PathVariable("gameId") long gameId) {
+    public ResponseEntity<Void> deleteGame(
+            @PathVariable("gameId") long gameId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Game existingGame = gameService.findGame(gameId)
+                .orElseThrow(() -> new NoSuchElementException("game.not_found"));
+
+        boolean admin = isAdmin(userDetails);
+
+        if (existingGame.getAuthor().getId() != userDetails.getId() && !admin) {
+            return ResponseEntity.status(403).build();
+        }
+
         Game game = gameService.findGame(gameId).orElseThrow();
+
         deleteFileIfExists(game.getImageUrl());
         deleteFileIfExists(game.getGameFileUrl());
 

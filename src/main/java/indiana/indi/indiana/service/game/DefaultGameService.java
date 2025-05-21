@@ -3,6 +3,7 @@ package indiana.indi.indiana.service.game;
 import indiana.indi.indiana.entity.Category;
 import indiana.indi.indiana.entity.Comment;
 import indiana.indi.indiana.entity.Game;
+import indiana.indi.indiana.entity.User;
 import indiana.indi.indiana.repository.CategoryRepository;
 import indiana.indi.indiana.repository.GameRepository;
 import jakarta.transaction.Transactional;
@@ -36,14 +37,17 @@ public class DefaultGameService implements GameService {
             String imageUrl,
             String gameFileUrl,
             List<Long> categoryId,
-            List<Comment> comments){
+            List<Comment> comments,
+            User author){
         List<Category> categories = categoryRepository.findAllById(categoryId);
 
         if(categories.isEmpty()){
             throw  new RuntimeException("Category not found!");
         }
 
-        return this.gameRepository.save(new Game( null,title, details, imageUrl, gameFileUrl, categories, comments));
+        return this.gameRepository.save(new Game(
+                null,title, details, imageUrl, gameFileUrl, categories, comments, author
+        ));
     }
 
     @Override

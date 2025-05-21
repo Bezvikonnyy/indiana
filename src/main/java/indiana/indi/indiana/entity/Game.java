@@ -46,8 +46,10 @@ public class Game {
     )
     private List<Category> categories;
 
-
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private User author;
 }
