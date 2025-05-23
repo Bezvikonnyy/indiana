@@ -1,7 +1,6 @@
 package indiana.indi.indiana.controller.payload;
 
 import indiana.indi.indiana.entity.Comment;
-import indiana.indi.indiana.entity.User;
 
 import java.util.List;
 
@@ -11,6 +10,5 @@ public record NewGamePayload(
         String imageUrl,
         String gameFileUrl,
         List<Long> categoryId,
-        List<Comment> comments,
-        User author) {
+        List<Comment> comments) {
 }

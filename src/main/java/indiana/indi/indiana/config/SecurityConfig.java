@@ -10,6 +10,7 @@ import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 
 
 @Configuration
@@ -32,6 +33,11 @@ public class SecurityConfig {
     }
 
     @Bean
+    public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
+        return new HiddenHttpMethodFilter();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
@@ -46,7 +52,7 @@ public class SecurityConfig {
                         .requestMatchers("/user/edit_profile/**")
                         .hasAnyRole("Пользователь", "Автор", "Администратор")
                         .requestMatchers("/game/delete/**", "/game/edit/**")
-                        .hasRole("Автор")
+                        .hasAnyRole("Автор", "Администратор")
                         .anyRequest().authenticated() // всё остальное требует входа
                 )
                 .formLogin(form -> form

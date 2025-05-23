@@ -127,7 +127,8 @@ public class GameController {
     public ResponseEntity<?> createGame(
             @Valid NewGamePayload payload,
             @RequestParam("imageFile") MultipartFile imageFile,
-            @RequestParam("gameFile") MultipartFile gameFile
+            @RequestParam("gameFile") MultipartFile gameFile,
+            @AuthenticationPrincipal CustomUserDetails currentUser
     ) throws IOException {
 
         String imageFileUrl = saveFile(imageFile, "imageFile");
@@ -140,7 +141,7 @@ public class GameController {
                 gameFileUrl,
                 payload.categoryId(),
                 payload.comments(),
-                payload.author()
+                currentUser.getUser()
         );
 
         String redirectUrl = "/game/" + game.getId();
@@ -215,4 +216,5 @@ public class GameController {
         this.gameService.deleteGame(gameId);
         return ResponseEntity.noContent().build();
     }
+
 }

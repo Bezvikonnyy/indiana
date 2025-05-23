@@ -5,77 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Details</title>
     <link rel="stylesheet" href="/css/styles.css">
-    <script>
-        function deleteGame(gameId) {
-            if (confirm("Вы уверены, что хотите удалить эту игру?")) {
-                fetch(`/game/delete/${gameId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            // Перенаправление на список игр после успешного удаления
-                            window.location.href = '/home';
-                        } else {
-                            alert('Ошибка при удалении игры.');
-                        }
-                    })
-                    .catch(error => {
-                        alert('Произошла ошибка: ' + error);
-                    });
-            }
-        }
-    </script>
 </head>
 <body>
 <div class="page-wrapper">
-<header>
-    <div style="display: flex; justify-content: center; align-items: center; position: relative;">
-        <h1 th:text="${game.title}">Название игры</h1>
-        <div style="position: absolute; right: 20px;">
-            <a href="/profile">Профиль</a> | <a href="/user/login">Выйти</a>
+    <header>
+        <div style="display: flex; justify-content: center; align-items: center; position: relative;">
+            <h1 th:text="${game.title}">Название игры</h1>
+            <div style="position: absolute; right: 20px;">
+                <a href="/profile">Профиль</a> | <a href="/user/login">Выйти</a>
+            </div>
         </div>
-    </div>
-</header>
+    </header>
 
-<main>
-    <section>
-        <h2>Описание</h2>
-        <p th:text="${game.details}">О игре</p>
+    <main>
+        <section>
+            <h2>Описание</h2>
+            <p th:text="${game.details}">О игре</p>
 
-        <h3>Категории</h3>
-        <ul>
-            <li th:each="category : ${game.categories}" th:text="${category.title}">Категория</li>
-        </ul>
+            <h3>Категории</h3>
+            <ul>
+                <li th:each="category : ${game.categories}" th:text="${category.title}">Категория</li>
+            </ul>
 
-        <h3>Изображение</h3>
-        <img th:src="@{${game.imageUrl}}" alt="Game Image" style="max-width: 250px;">
+            <h3>Изображение</h3>
+            <img th:src="@{${game.imageUrl}}" alt="Game Image" style="max-width: 250px;">
 
-        <h3>Файл игры</h3>
-        <a th:href="@{'/' + ${game.gameFileUrl}}" download>Скачать игру</a>
+            <h3>Файл игры</h3>
+            <a th:href="@{'/' + ${game.gameFileUrl}}" download>Скачать игру</a>
 
-        <div style="margin-top: 20px;"
-             th:if="${game.author.id == currentUserId or isAdmin}">
-            <!-- Кнопка редактирования -->
-            <a th:href="@{'/game/edit/' + ${game.id}}">
-                <button>Редактировать</button>
-            </a>
+            <div style="margin-top: 20px;"
+                 th:if="${game.author.id == currentUserId or isAdmin}">
+                <!-- Кнопка редактирования -->
+                <a th:href="@{'/game/edit/' + ${game.id}}">
+                    <button>Редактировать</button>
+                </a>
 
-            <!-- Кнопка для удаления игры -->
-            <button th:onclick="'deleteGame(' + ${game.id} + ')'">Удалить</button>
-        </div>
+                <!-- Форма для удаления игры -->
+                <form th:action="@{'/game/delete/' + ${game.id}}" method="post" style="display: inline;">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" onclick="return confirm('Вы уверены, что хотите удалить эту игру?');">
+                        Удалить
+                    </button>
+                </form>
+            </div>
 
+            <br/>
+            <a href="/home">← Назад ко всем играм</a>
+        </section>
+    </main>
 
-        <br/>
-        <a href="/home">← Назад ко всем играм</a>
-    </section>
-</main>
-
-<footer>
-    <p>© 2025 Game Catalog</p>
-</footer>
+    <footer>
+        <p>© 2025 Game Catalog</p>
+    </footer>
 </div>
 </body>
 </html>
